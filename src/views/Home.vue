@@ -27,10 +27,13 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    font-size: 30px;
     margin-bottom: 5px;
     line-height: 30px;
-    font-family: "PingFang SC", sans-serif; 
+    p{
+      font-size: 30px;
+      font-family: "Helvetica Neue", sans-serif;
+    }
+
   }
 }
   </style>

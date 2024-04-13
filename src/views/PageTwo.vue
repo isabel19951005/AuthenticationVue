@@ -1,10 +1,21 @@
 <template>
   <div>
     <div style="text-align: center;  font-size: 19px;height: auto; margin-bottom: 20px;">B域文件</div>
-    <el-card style="'height: auto; width: 90%;'">
+    <el-card style="height: 640px; width: 90%;margin-left: 60px;">
       <div class = "manage">
-        <div class ="manage-header">
+        <div style="display: flex; justify-content: flex-end; align-items: center;">
+          <el-form :inline="true" :model="userForm">
+            <el-form-item>
+              <el-input placeholder="请输入文件名" v-model="userForm.filename" ></el-input>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="onSubmit">查询</el-button>
+            </el-form-item>
+          </el-form>
+        </div>
+        <div style="height: 510px; overflow-y: auto;position: relative;">
           <el-table
+              stripe
               :data="tableData2"
               style="width: 100%">
             <el-table-column
@@ -39,6 +50,13 @@
             </el-table-column>
           </el-table>
         </div>
+        <div style="position: absolute;right: 100px;">
+          <el-pagination
+              layout="prev, pager, next"
+              :total="total"
+              @current-change="handlePage">
+          </el-pagination>
+        </div>
       </div>
     </el-card>
   </div>
@@ -49,6 +67,14 @@ import {dlBdata, getBdomain} from '@/api'
 export default{
   data(){
     return{
+      userForm:{
+        filename:''
+      },
+      total: 0,
+      pageData:{
+        page:1,
+        limit:10
+      },
       tableData2:[],
       dialogVisible: false,
       form:{
@@ -114,11 +140,22 @@ export default{
     },
     //获取列表中的数据
     getList(){
-      getBdomain().then(({data}) =>{
+      getBdomain({params: {...this.userForm,...this.pageData}}).then(({data}) =>{
         //console.log(data)
         this.tableData2 = data.list
+        this.total=data.count || 0
       })
+    },
+    //页码回调
+    handlePage(val){
+      //console.log(val,"val")
+      this.pageData.page=val
+      this.getList()
+    },
+    //列表搜索
+    onSubmit(){
+      this.getList()
     }
-    }
+  }
 }
 </script>

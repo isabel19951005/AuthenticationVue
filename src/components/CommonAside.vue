@@ -5,9 +5,8 @@
          @open="handleOpen" 
          @close="handleClose" 
          :collapse="isCollapse"
-         background-color="#545c64"
-        text-color="#fff"
-        active-text-color="#ffd04b">
+         background-color="#FFFFFF"
+        active-text-color="#409EFF">
 
          <h3>{{isCollapse?'后台':'跨域身份认证系统'}}</h3>
           <el-menu-item @click="clickMenu(item)" v-for="item in noChildren" :key="item.name" :index="item.name">
@@ -35,14 +34,13 @@
   .el-menu{
     height: 100dvh;
     h3 {
-        color:#fff;
+        font-size: 16px;
+        font-family: "Microsoft YaHei", sans-serif;
+        font-weight: 700;
         text-align: center;
         line-height: 48px;
-        font-size: 16px;
-        font-weight: 400;
     }
     h4 {
-        color:#fff;
         text-align: center;
         line-height: 48px;
         font-size: 16px;

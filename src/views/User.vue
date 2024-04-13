@@ -30,9 +30,9 @@
                     </div>
                 </el-card>
             </div>
-          <el-card style="height: auto;">
+          <el-card style="height: 580px;">
             <div style="text-align: center;  font-size: 19px;height: auto">本地文件</div>
-            <div class = "manage">
+            <div>
               <el-dialog
                   title="文件"
                   :visible.sync="dialogVisible"
@@ -61,7 +61,7 @@
                     </el-select>
                   </el-form-item>
                   <el-form-item label="内容" prop="content">
-                    <el-input placeholder="请输入文件内容" v-model="form.content" type="textarea" style="width: 260%;"></el-input>
+                    <el-input placeholder="请输入文件内容" v-model="form.content" type="textarea" style="width: 270%;"></el-input>
                   </el-form-item>
                 </el-form>
                 <span slot="footer" class="dialog-footer">
@@ -69,45 +69,65 @@
           <el-button type="primary" @click="submit">确 定</el-button>
         </span>
               </el-dialog>
-              <div class ="manage-header">
+              <div style="display: flex;justify-content: space-between;align-items: center;">
                 <el-button @click="handleAdd" type="primary">
                   + 新增
                 </el-button>
-                <el-table
-                    :data="tableData2"
-                    style="width:200%;">
-                  <el-table-column
-                      prop="filename"
-                      label="文件名">
-                  </el-table-column>
-                  <el-table-column
-                      prop="domain"
-                      label="域名">
-                  </el-table-column>
-                  <el-table-column
-                      prop="username"
-                      label="用户名">
-                  </el-table-column>
-                  <el-table-column
-                      prop="category"
-                      label="分类">
-                  </el-table-column>
-                  <el-table-column
-                      prop="content"
-                      label="内容" >
-                    <template #default="scope1">
-                      <el-button size="mini" @click="handleEdit(scope1.row)">查看</el-button>
-                    </template>
-                  </el-table-column>
-                  <el-table-column
-                      prop="operate"
-                      label="操作" >
-                    <template #default="scope2" >
-                      <el-button size="mini" @click="handlePub(scope2.row)">公开</el-button>
-                      <el-button type="danger" size="mini" @click="handleDel(scope2.row)">删除</el-button>
-                    </template>
-                  </el-table-column>
-                </el-table>
+                <el-form :inline="true" :model="userForm">
+                    <el-form-item>
+                      <el-input placeholder="请输入文件名" v-model="userForm.filename" ></el-input>
+                    </el-form-item>
+                  <el-form-item>
+                    <el-button type="primary" @click="onSubmit">查询</el-button>
+                  </el-form-item>
+                </el-form>
+              </div>
+              <div>
+                <div style="height: 420px; overflow-y: auto;position: relative;">
+                  <el-table
+                      stripe
+                      :data="tableData2"
+                      style="width:100%;">
+                    <el-table-column
+                        prop="filename"
+                        label="文件名">
+                    </el-table-column>
+                    <el-table-column
+                        prop="domain"
+                        label="域名">
+                    </el-table-column>
+                    <el-table-column
+                        prop="username"
+                        label="用户名">
+                    </el-table-column>
+                    <el-table-column
+                        prop="category"
+                        label="分类">
+                    </el-table-column>
+                    <el-table-column
+                        prop="content"
+                        label="内容" >
+                      <template #default="scope1">
+                        <el-button size="mini" @click="handleEdit(scope1.row)">查看</el-button>
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                        prop="operate"
+                        label="操作" >
+                      <template #default="scope2" >
+                        <el-button size="mini" @click="handlePub(scope2.row)">公开</el-button>
+                        <el-button type="danger" size="mini" @click="handleDel(scope2.row)">删除</el-button>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                </div>
+                <div style="position: absolute;bottom:0;right: 20px;">
+                  <el-pagination
+                      layout="prev, pager, next"
+                      :total="total"
+                      @current-change="handlePage">
+                  </el-pagination>
+                </div>
               </div>
             </div>
           </el-card>
@@ -122,6 +142,14 @@ import { getData } from '@/api'
 export default{
         data(){
             return{
+              userForm:{
+                  filename:''
+              },
+              total: 0,
+              pageData:{
+                page:1,
+                limit:10
+              },
               tableData2:[],
               modelType: 0,//0表示新增，1表示查看
               dialogVisible: false,
@@ -225,20 +253,20 @@ export default{
             //对当前行数据进行深拷贝
             this.form = JSON.parse(JSON.stringify(row))
         },
-        handlePub(row){
-          this.$confirm('此操作将公开该文件, 是否继续?', '提示', {
+        handlePub(row) {
+          this.$confirm('此操作将公开该文件，是否继续?', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
-            pubFile(JSON.stringify(row)).then(()=>{
-              this.$message({
-                type: 'success',
-                message: '公开成功!'
-              });
-            //重新获取列表接口
-              this.getList()
-            })
+            pubFile(JSON.stringify(row)).then(response => {
+                this.$message({
+                  type: 'success',
+                  message: '公开成功'
+                });
+              // 重新获取列表接口
+              this.getList();
+            });
           }).catch(() => {
             this.$message({
               type: 'info',
@@ -273,10 +301,21 @@ export default{
         },
         //获取列表中的数据
         getList(){
-          getUser().then(({data}) =>{
+          getUser({params: {...this.userForm,...this.pageData}}).then(({data}) =>{
             //console.log(data)
             this.tableData2= data.list
+            this.total=data.count || 0
           })
+        },
+        //页码回调
+        handlePage(val){
+          //console.log(val,"val")
+          this.pageData.page=val
+          this.getList()
+        },
+        //列表搜索
+        onSubmit(){
+          this.getList()
         }
 
       }
@@ -298,7 +337,7 @@ export default{
     }
     .userinfo{
         margin-bottom: 10px;
-        font-size: 32px;
+        font-size: 30px;
     }
 }
 
@@ -315,7 +354,6 @@ export default{
     }
 }
 .num{
-    
     display:flex;
     flex-wrap: wrap;
     justify-content: space-between;
@@ -323,7 +361,7 @@ export default{
     .icon{
         width: 80px;
         height: auto;
-        font-size: 30px;
+        font-size: 24px;
         text-align: center;
         line-height: 80px;
         color: #fff;
@@ -353,4 +391,8 @@ export default{
     margin-bottom: 10px;
  }
 }
+.manage {
+  height: 90%;
+}
+
 </style>

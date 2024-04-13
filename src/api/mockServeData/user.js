@@ -18,22 +18,22 @@ function param2Obj (url) {
 
 
 let List1 = []
-const count1 = 2
+const count1 = 20
 
 let List2 = []
-const count2 = 10
+const count2 = 200
 const dList = ["A域", "B域"];
 const cList = ["文学", "心理","历史", "政治"];
-const mList  = ["Life is like riding a bicycle. To keep your balance, you must keep moving. Albert Einstein",
-                         "The only way to do great work is to love what you do.Steve Jobs",
-                         "Stars can't shine without darkness.",
-                         "Life is a journey, not a destination."];
+const fList =["红楼梦", "西游记", "三国演义", "水浒传"]
+const mList  = ["下载地址：****",
+                         "下载地址：-----",
+                         "下载地址1：-----；下载地址2：******"];
 for (let i = 0; i < count1; i++) {
     List1.push(
         Mock.mock({
             id: Mock.Random.guid(),
             username: Mock.Random.name(),
-            filename:'file' + Mock.Random.natural(1,200),
+            filename:Mock.Random.pick(fList)  + Mock.Random.natural(1,200),
             domain: Mock.Random.pick(dList),
             category:Mock.Random.pick(cList),
             content: Mock.Random.pick(mList),
@@ -47,7 +47,7 @@ for (let i = 0; i < count2; i++) {
         Mock.mock({
             id: Mock.Random.guid(),
             username: Mock.Random.name(),
-            filename:'file' + Mock.Random.natural(1,200),
+            filename:Mock.Random.pick(fList)  + Mock.Random.natural(1,200),
             domain: Mock.Random.pick(dList),
             category:Mock.Random.pick(cList),
             content: Mock.Random.pick(mList),
@@ -64,7 +64,7 @@ export default {
      * @param config
      */
     getUserList: config => {
-        const { filename, page = 1, limit = 10 } = param2Obj(config.url)
+        const { filename, page = 1, limit = 10} = param2Obj(config.url)
         console.log('filename:' + filename, 'page:' + page, '分页大小limit:' + limit)
         const mockList = List1.filter(user => {
             return !(filename && user.filename.indexOf(filename) === -1);
@@ -102,7 +102,7 @@ export default {
 
     /**
      * 获取B域列表
-     * 要带参数 filename, page, limt; filename可以不填, page,limit有默认值。
+     * 要带参数 filename, page, limit; filename可以不填, page,limit有默认值。
      * @return {{code: number, count: number, list: *[]}}
      * @param config
      */
@@ -124,7 +124,7 @@ export default {
 
     /**
      * 获取区块链白名单列表
-     * 要带参数 filename, page, limt; filename可以不填, page,limit有默认值。
+     * 要带参数 filename, page, limit; filename可以不填, page,limit有默认值。
      * @return {{code: number, count: number, list: *[]}}
      * @param config
      */
@@ -232,7 +232,7 @@ export default {
             return {
                 code: 20001,
                 data: {
-                    message: '数据已存在，无需重复上传'
+                    message: '数据已存在'
                 }
             };
         }

@@ -5,11 +5,11 @@
             <common-aside />
         </el-aside>
         <el-container>
-            <el-header>
+            <el-header style="height: 50px;">
                 <common-header />
             </el-header>
-                <common-tag />
-            <el-main> 
+                <common-tag class="custom-main" />
+            <el-main class="custom-main">
                 <router-view></router-view>
             </el-main>
         </el-container>
@@ -37,4 +37,8 @@
     .el-header{
         padding:0
     }
+    .custom-main {
+      background-color: #f8f8f8;
+    }
+
     </style>
