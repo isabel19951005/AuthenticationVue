@@ -67,6 +67,7 @@ import { FormItem } from 'element-ui';
           icon: "s-home",
           url: "Home/Home",
         },
+
         {
           path: "/user",
           name: "user",
@@ -100,6 +101,20 @@ import { FormItem } from 'element-ui';
               url: "Other/PageTwo",
             },
           ],
+        },
+        {
+          path: "/crossdomainverify",
+          name: "crossdomainverify",
+          label: "用户身份认证",
+           // icon: "el-icon-star-on",
+          // url: "Home/Home",
+        },
+        {
+          path: "/dataidentityauth",
+          name: "dataidentityauth",
+          label: "数据身份认证",
+          // icon: "el-icon-star-on",
+          // url: "Home/Home",
         },
       ]
       };
