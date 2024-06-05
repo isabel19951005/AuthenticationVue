@@ -21,12 +21,17 @@
 </template>
 
 <script>
+import {mapActions} from "vuex";
+
 export default {
   methods: {
     handleMenu() {
       this.$store.commit('collapseMenu');
     },
+    ...mapActions('user', ['logout']),
     handleLogout() {
+       this.logout();
+      this.$router.push({ path: '/login' });
       // 处理退出逻辑
     },
   },
